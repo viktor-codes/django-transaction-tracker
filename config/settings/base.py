@@ -28,6 +28,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # Local apps
+    "apps.core",
+    "apps.transactions",
 ]
 
 MIDDLEWARE = [
@@ -63,11 +67,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.parse(
-        config('DATABASE_URL')
-    )
-}
+DATABASES = {"default": dj_database_url.parse(config("DATABASE_URL"))}
 
 
 # Password validation
