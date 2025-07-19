@@ -34,16 +34,10 @@ class TransactionService:
                 # Create new transaction
                 transaction = Transaction(
                     transaction_code=transaction_data["id"],
-                    amount=transaction_data["amount"],
+                    amount=abs(transaction_data["amount"]),
                     type=transaction_data["type"],
                     transaction_date=parse_datetime(transaction_data["createdAt"]),
                 )
-
-                # Handle amount sign based on type
-                if transaction.type == "expense":
-                    transaction.amount = -abs(transaction.amount)
-                else:
-                    transaction.amount = abs(transaction.amount)
 
                 transaction.save()
                 created_count += 1
