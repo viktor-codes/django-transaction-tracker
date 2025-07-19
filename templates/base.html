@@ -6,10 +6,17 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="/">Transaction Tracker</a>
+    <div class="container-fluid">
+        <!-- Brand on the left -->
+        <a class="navbar-brand" href="/">Transaction Tracker</a>
+
+        <!-- Links on the right -->
+        <div class="d-flex">
+            <a class="text-muted text-decoration-none me-3" href="/">Load Transactions</a>
+            <a class="text-muted text-decoration-none" href="/">Add Transaction</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <main class="container">
         {% block content %}{% endblock %}
