@@ -1,6 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Transactions</h1>
-{{transactions}}
+<div class="row">
+    <div class="col-12">
+        <h1>Transactions</h1>
+
+        {% if transactions %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Running Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.transaction_code }}</td>
+                            <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
+                            <td>
+                                {{transaction.type|capfirst}}
+                            </td>
+                            <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
+                            {% if transaction.type == 'deposit' %}+{% else %}{% endif %}{{ transaction.amount|floatformat:2 }}
+                            </td>
+
+                            <td class="fw-medium">
+            ${{ transaction.running_balance|floatformat:2 }}
+        </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h4>No transactions yet</h4>
+                <p>Import transactions from the API or add them manually.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
