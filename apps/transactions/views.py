@@ -2,7 +2,8 @@ from django.shortcuts import render
 from .models import Transaction
 from django.http import HttpResponse
 from .services import TransactionService
-
+from .forms import TransactionForm
+from django.utils import timezone
 
 def transaction_list(request):
     transactions = Transaction.objects.all().order_by(
@@ -60,3 +61,53 @@ def load_transactions(request):
                 </div>
             """
             )
+
+
+def generate_transaction_code():
+    """Generate next available transaction code"""
+    count = Transaction.objects.count()
+    return f"TXN-{count + 1:04d}"
+
+
+def add_transaction(request):
+    if request.method == "POST":
+        form = TransactionForm(request.POST)
+
+        if form.is_valid():
+            try:
+                # Create transaction
+                transaction = form.save(commit=False)
+                transaction.transaction_code = generate_transaction_code()
+                transaction.transaction_date = timezone.now()
+                transaction.save()
+
+                return HttpResponse(
+                    """
+                    <div class="alert alert-success">
+                        Transaction added successfully!
+                    </div>
+                    <script>
+                        setTimeout(() => {
+                            bootstrap.Modal.getInstance(document.getElementById('addTransactionModal')).hide();
+                            window.location.reload();
+                        }, 1500);
+                    </script>
+                """
+                )
+
+            except Exception as e:
+                return HttpResponse(
+                    f"""
+                    <div class="alert alert-danger">
+                        Error creating transaction: {str(e)}
+                    </div>
+                """
+                )
+        else:
+            # Return form errors
+            error_html = '<div class="alert alert-danger"><ul class="mb-0">'
+            for field, errors in form.errors.items():
+                for error in errors:
+                    error_html += f"<li>{error}</li>"
+            error_html += "</ul></div>"
+            return HttpResponse(error_html)

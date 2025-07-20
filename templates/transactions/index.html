@@ -2,58 +2,111 @@
 
 {% block content %}
 <div class="row mt-3">
-    <div class="col-12">
-        <h1>Balance: ${{ current_balance|floatformat:2 }}</h1>
+  <div class="col-12">
+    <h1>Balance: ${{ current_balance|floatformat:2 }}</h1>
 
-        <!-- Message area for HTMX responses -->
-        <div id="message-area"></div>
+    <!-- Message area for HTMX responses -->
+    <div id="message-area"></div>
 
-        <!-- Loading indicator -->
-        <div id="loading" class="htmx-indicator">
-            <div class="alert alert-info">
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                Loading transactions...
-            </div>
-        </div>
-
-        {% if transactions %}
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Running Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for transaction in transactions %}
-                        <tr>
-                            <td>{{ transaction.transaction_code }}</td>
-                            <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
-                            <td>
-                                {{transaction.type|capfirst}}
-                            </td>
-                            <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
-                            {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
-                            </td>
-
-                            <td class="fw-medium">
-            ${{ transaction.running_balance|floatformat:2 }}
-        </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="alert alert-info">
-                <h4>No transactions yet</h4>
-                <p>Import transactions from the API or add them manually.</p>
-            </div>
-        {% endif %}
+    <!-- Loading indicator -->
+    <div id="loading" class="htmx-indicator">
+      <div class="alert alert-info">
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Loading transactions...
+      </div>
     </div>
+
+    {% if transactions %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Running Balance</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+        <tr>
+          <td>{{ transaction.transaction_code }}</td>
+          <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
+          <td>
+            {{transaction.type|capfirst}}
+          </td>
+          <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
+            {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
+          </td>
+
+          <td class="fw-medium">
+            ${{ transaction.running_balance|floatformat:2 }}
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      <h4>No transactions yet</h4>
+      <p>Import transactions from the API or add them manually.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<!-- Add Transaction Modal -->
+<div class="modal fade" id="addTransactionModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Transaction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form
+            hx-post="/add-transaction/"
+            hx-target="#form-errors"
+            hx-swap="innerHTML">
+          {% csrf_token %}
+
+          <div id="form-errors"></div>
+
+          <div class="mb-3">
+            <label for="type" class="form-label">Type *</label>
+            <select class="form-select" name="type" id="type" required>
+              <option value="" disabled selected>Select type...</option>
+              <option value="deposit">Deposit</option>
+              <option value="expense">Expense</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="amount" class="form-label">Amount *</label>
+            <input
+                type="number"
+                class="form-control"
+                name="amount"
+                id="amount"
+                step="0.01"
+                min="0.01"
+                placeholder="0.00"
+                required>
+          </div>
+
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Discard
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

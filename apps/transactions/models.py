@@ -11,9 +11,19 @@ class Transaction(TimestampedModel):
     transaction_date = models.DateTimeField()
 
     class Meta:
-        ordering = ['-transaction_date']
+        ordering = ["-transaction_date"]
         verbose_name = "Transaction"
         verbose_name_plural = "Transactions"
+
+    def get_signed_amount(self):
+        """Return amount with proper sign for calculations"""
+        return -self.amount if self.type == "expense" else self.amount
+
+    @classmethod
+    def get_current_balance(cls):
+        """Calculate total current balance"""
+        transactions = cls.objects.all()
+        return sum(tx.get_signed_amount() for tx in transactions)
 
     def __str__(self):
         return f"{self.transaction_code} - {self.type} - ${self.amount}"
