@@ -36,7 +36,9 @@ class TransactionService:
                     transaction_code=transaction_data["id"],
                     amount=abs(transaction_data["amount"]),
                     type=transaction_data["type"],
-                    transaction_date=parse_datetime(transaction_data["createdAt"]),
+                    transaction_date=parse_datetime(
+                        transaction_data["createdAt"]
+                    ),
                 )
 
                 transaction.save()

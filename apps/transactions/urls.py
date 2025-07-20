@@ -5,7 +5,9 @@ app_name = "transactions"
 
 urlpatterns = [
     path("", views.transaction_list, name="transaction-list"),
-    path("load-transactions/", views.load_transactions, name="load-transactions"),
+    path(
+        "load-transactions/", views.load_transactions, name="load-transactions"
+    ),
     path("add-transaction/", views.add_transaction, name="add-transaction"),
     path(
         "load-more-transactions/",

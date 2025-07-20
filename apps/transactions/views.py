@@ -28,7 +28,9 @@ def _get_paginated_transactions(page_number=1):
     transactions = Transaction.objects.all().order_by("transaction_date")
 
     # Calculate running balance
-    transactions_with_balance, total_balance = _calculate_running_balances(transactions)
+    transactions_with_balance, total_balance = _calculate_running_balances(
+        transactions
+    )
 
     # Reverse to show newest first
     transactions_with_balance.reverse()
@@ -51,7 +53,9 @@ def transaction_list(request):
             "transactions": page_obj,
             "current_balance": current_balance,
             "has_more": page_obj.has_next(),
-            "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+            "next_page": (
+                page_obj.next_page_number() if page_obj.has_next() else None
+            ),
         },
     )
 
@@ -59,7 +63,9 @@ def transaction_list(request):
 def load_transactions(request):
     if request.method == "POST":
         try:
-            created_count, skipped_count = TransactionService.import_transactions_from_api()
+            created_count, skipped_count = (
+                TransactionService.import_transactions_from_api()
+            )
 
             return HttpResponse(
                 f"""
@@ -95,7 +101,9 @@ def load_more_transactions(request):
         {
             "transactions": page_obj,
             "has_more": page_obj.has_next(),
-            "next_page": page_obj.next_page_number() if page_obj.has_next() else None,
+            "next_page": (
+                page_obj.next_page_number() if page_obj.has_next() else None
+            ),
         },
     )
 
@@ -119,13 +127,15 @@ def _create_alert_response(message, alert_type="success", auto_close=False):
         </script>
         """
 
-    return HttpResponse(f"""
+    return HttpResponse(
+        f"""
         <div class="alert alert-{alert_type} alert-dismissible">
             {message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {auto_close_script}
-    """)
+    """
+    )
 
 
 def add_transaction(request):
@@ -143,13 +153,12 @@ def add_transaction(request):
                 return _create_alert_response(
                     "Transaction added successfully!",
                     "success",
-                    auto_close=True
+                    auto_close=True,
                 )
 
             except Exception as e:
                 return _create_alert_response(
-                    f"Error creating transaction: {str(e)}",
-                    "danger"
+                    f"Error creating transaction: {str(e)}", "danger"
                 )
         else:
             # Return form errors
@@ -158,6 +167,5 @@ def add_transaction(request):
                 error_messages.extend(errors)
 
             return _create_alert_response(
-                "<br>".join(error_messages),
-                "danger"
+                "<br>".join(error_messages), "danger"
             )
