@@ -28,23 +28,8 @@
           <th>Running Balance</th>
         </tr>
         </thead>
-        <tbody>
-        {% for transaction in transactions %}
-        <tr>
-          <td>{{ transaction.transaction_code }}</td>
-          <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
-          <td>
-            {{transaction.type|capfirst}}
-          </td>
-          <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
-            {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
-          </td>
-
-          <td class="fw-medium">
-            ${{ transaction.running_balance|floatformat:2 }}
-          </td>
-        </tr>
-        {% endfor %}
+        <tbody id="transaction-tbody">
+        {% include 'transactions/partials/transaction_rows.html' %}
         </tbody>
       </table>
     </div>
