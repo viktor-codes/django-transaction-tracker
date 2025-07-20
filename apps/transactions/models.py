@@ -15,11 +15,5 @@ class Transaction(TimestampedModel):
         verbose_name = "Transaction"
         verbose_name_plural = "Transactions"
 
-    @classmethod
-    def get_current_balance(cls):
-        """Calculate total current balance"""
-        transactions = cls.objects.all()
-        return sum(tx.get_signed_amount() for tx in transactions)
-
     def __str__(self):
         return f"{self.transaction_code} - {self.type} - ${self.amount}"

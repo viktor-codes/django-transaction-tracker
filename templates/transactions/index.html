@@ -5,6 +5,17 @@
     <div class="col-12">
         <h1>Balance: ${{ current_balance|floatformat:2 }}</h1>
 
+        <!-- Message area for HTMX responses -->
+        <div id="message-area"></div>
+
+        <!-- Loading indicator -->
+        <div id="loading" class="htmx-indicator">
+            <div class="alert alert-info">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Loading transactions...
+            </div>
+        </div>
+
         {% if transactions %}
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -26,7 +37,7 @@
                                 {{transaction.type|capfirst}}
                             </td>
                             <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
-                            {% if transaction.type == 'deposit' %}+{% else %}{% endif %}{{ transaction.amount|floatformat:2 }}
+                            {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
                             </td>
 
                             <td class="fw-medium">
