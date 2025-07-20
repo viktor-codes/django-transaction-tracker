@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Transaction
 from django.http import HttpResponse
 from .services import TransactionService
@@ -88,6 +88,38 @@ def load_transactions(request):
                 </div>
                 """
             )
+
+
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+
+            # Instead of redirect, return success response for HTMX
+            return HttpResponse('''
+                <div class="alert alert-success">
+                    Transaction updated successfully!
+                </div>
+                <script>
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('editTransactionModal')).hide();
+                        window.location.reload();
+                    }, 1500);
+                </script>
+            ''')
+        else:
+            # Form has errors - re-render the form with errors
+            context = {'form': form, 'transaction': transaction}
+            return render(request, 'transactions/partials/edit_form.html', context)
+
+    else:
+        # GET request - show form
+        form = TransactionForm(instance=transaction)
+        context = {'form': form, 'transaction': transaction}
+        return render(request, 'transactions/partials/edit_form.html', context)
 
 
 def load_more_transactions(request):

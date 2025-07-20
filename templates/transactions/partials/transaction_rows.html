@@ -1,32 +1,62 @@
 {% for transaction in transactions %}
 <tr>
-    <td>{{ transaction.transaction_code }}</td>
-    <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
-    <td>{{ transaction.type|capfirst }}</td>
-    <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
-        {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
-    </td>
-    <td class="fw-medium">
-        ${{ transaction.running_balance|floatformat:2 }}
-    </td>
-    <td class="fw-medium">
-        edit/delete
-    </td>
+  <td>{{ transaction.transaction_code }}</td>
+  <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
+  <td>{{ transaction.type|capfirst }}</td>
+  <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
+    {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
+  </td>
+  <td class="fw-medium">
+    ${{ transaction.running_balance|floatformat:2 }}
+  </td>
+  <td class="fw-medium">
+    <!--    <button-->
+    <!--        class="btn btn-sm btn-outline-primary me-1"-->
+    <!--        data-bs-toggle="modal"-->
+    <!--        data-bs-target="#editTransactionModal"-->
+    <!--        onclick="loadEditForm({{ transaction.pk }}, '{{ transaction.transaction_code }}', '{{ transaction.type }}', {{ transaction.amount }})">-->
+    <!--      <i class="bi bi-pencil-square"></i>-->
+    <!--    </button>-->
+    <button
+        class="btn btn-sm btn-outline-primary me-1"
+        data-bs-toggle="modal"
+        data-bs-target="#editTransactionModal"
+        hx-get="/edit-transaction/{{ transaction.pk }}/"
+        hx-target="#modal-form-container">
+      <i class="bi bi-pencil-square"></i>
+    </button>
+    <button class="btn btn-sm btn-outline-danger">
+      <i class="bi bi-trash3"></i>
+    </button>
+  </td>
 </tr>
 {% endfor %}
 
 <!-- Load More Button -->
 {% if has_more %}
 <tr id="load-more-row">
-    <td colspan="6" class="py-3">
-        <a
-            href="#"
-            hx-get="/load-more-transactions/?page={{ next_page }}"
-            hx-target="#transaction-tbody"
-            hx-swap="beforeend"
-            hx-on:click="this.closest('tr').remove()">
-            Load More Transactions
-        </a>
-    </td>
+  <td colspan="6" class="py-3">
+    <a
+        href="#"
+        hx-get="/load-more-transactions/?page={{ next_page }}"
+        hx-target="#transaction-tbody"
+        hx-swap="beforeend"
+        hx-on:click="this.closest('tr').remove()">
+      Load More Transactions
+    </a>
+  </td>
 </tr>
+
+<!--<script>-->
+<!--function loadEditForm(id, code, type, amount) {-->
+<!--    // Populate the form fields-->
+<!--    document.getElementById('edit-transaction-id').value = id;-->
+<!--    document.getElementById('edit-transaction-code').value = code;-->
+<!--    document.getElementById('edit-type').value = type;-->
+<!--    document.getElementById('edit-amount').value = amount;-->
+
+<!--    // Set the form action URL-->
+<!--    document.getElementById('edit-form').action = `/edit-transaction/${id}/`;-->
+<!--}-->
+<!--</script>-->
 {% endif %}

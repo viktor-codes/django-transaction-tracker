@@ -10,6 +10,11 @@ urlpatterns = [
     ),
     path("add-transaction/", views.add_transaction, name="add-transaction"),
     path(
+        "edit-transaction/<int:pk>/",
+        views.edit_transaction,
+        name="edit-transaction",
+    ),
+    path(
         "load-more-transactions/",
         views.load_more_transactions,
         name="load-more-transactions",

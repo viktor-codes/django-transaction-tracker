@@ -4,9 +4,19 @@ from datetime import date
 
 
 class TransactionForm(forms.ModelForm):
+    type = forms.ChoiceField(
+        choices=[("deposit", "Deposit"), ("expense", "Expense")],
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+
     class Meta:
         model = Transaction
         fields = ["type", "amount"]
+        widgets = {
+            "amount": forms.NumberInput(
+                attrs={"class": "form-control", "step": "0.01", "min": "0.01"}
+            )
+        }
 
     def clean_amount(self):
         amount = self.cleaned_data["amount"]
@@ -32,6 +42,8 @@ class TransactionForm(forms.ModelForm):
                 ).count()
 
                 if today_expenses_count >= 200:
-                    raise forms.ValidationError("Your daily expense limit reached.")
+                    raise forms.ValidationError(
+                        "Your daily expense limit reached."
+                    )
 
         return cleaned_data
