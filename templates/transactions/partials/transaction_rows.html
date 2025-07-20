@@ -4,10 +4,13 @@
     <td>{{ transaction.transaction_date|date:"m/d/Y g:i" }}</td>
     <td>{{ transaction.type|capfirst }}</td>
     <td class="fw-medium {% if transaction.type == 'expense' %}text-danger{% else %}text-success{% endif %}">
-        {% if transaction.type == 'deposit' %}+{% endif %}{{ transaction.amount|floatformat:2 }}
+        {% if transaction.type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }}
     </td>
     <td class="fw-medium">
         ${{ transaction.running_balance|floatformat:2 }}
+    </td>
+    <td class="fw-medium">
+        edit/delete
     </td>
 </tr>
 {% endfor %}
@@ -15,7 +18,7 @@
 <!-- Load More Button -->
 {% if has_more %}
 <tr id="load-more-row">
-    <td colspan="5" class="py-3">
+    <td colspan="6" class="py-3">
         <a
             href="#"
             hx-get="/load-more-transactions/?page={{ next_page }}"
