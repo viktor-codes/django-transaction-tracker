@@ -93,13 +93,14 @@ def load_transactions(request):
 def edit_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TransactionForm(request.POST, instance=transaction)
         if form.is_valid():
             form.save()
 
             # Instead of redirect, return success response for HTMX
-            return HttpResponse('''
+            return HttpResponse(
+                """
                 <div class="alert alert-success">
                     Transaction updated successfully!
                 </div>
@@ -109,17 +110,50 @@ def edit_transaction(request, pk):
                         window.location.reload();
                     }, 1500);
                 </script>
-            ''')
+            """
+            )
         else:
             # Form has errors - re-render the form with errors
-            context = {'form': form, 'transaction': transaction}
-            return render(request, 'transactions/partials/edit_form.html', context)
+            context = {"form": form, "transaction": transaction}
+            return render(
+                request, "transactions/partials/edit_form.html", context
+            )
 
     else:
         # GET request - show form
         form = TransactionForm(instance=transaction)
-        context = {'form': form, 'transaction': transaction}
-        return render(request, 'transactions/partials/edit_form.html', context)
+        context = {"form": form, "transaction": transaction}
+        return render(request, "transactions/partials/edit_form.html", context)
+
+
+def delete_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+
+    if request.method == "POST":
+        transaction_code = transaction.transaction_code
+        transaction.delete()
+
+        # Return success response for HTMX
+        return HttpResponse(
+            """
+            <div class="alert alert-success">
+                Transaction deleted successfully!
+            </div>
+            <script>
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('deleteTransactionModal')).hide();
+                    window.location.reload();
+                }, 1500);
+            </script>
+        """
+        )
+
+    else:
+        # GET request - show confirmation form
+        context = {"transaction": transaction}
+        return render(
+            request, "transactions/partials/delete_confirmation.html", context
+        )
 
 
 def load_more_transactions(request):

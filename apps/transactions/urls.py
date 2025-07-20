@@ -15,6 +15,11 @@ urlpatterns = [
         name="edit-transaction",
     ),
     path(
+        "delete-transaction/<int:pk>/",
+        views.delete_transaction,
+        name="delete-transaction",
+    ),
+    path(
         "load-more-transactions/",
         views.load_more_transactions,
         name="load-more-transactions",

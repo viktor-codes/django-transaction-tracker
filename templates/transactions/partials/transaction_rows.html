@@ -10,13 +10,6 @@
     ${{ transaction.running_balance|floatformat:2 }}
   </td>
   <td class="fw-medium">
-    <!--    <button-->
-    <!--        class="btn btn-sm btn-outline-primary me-1"-->
-    <!--        data-bs-toggle="modal"-->
-    <!--        data-bs-target="#editTransactionModal"-->
-    <!--        onclick="loadEditForm({{ transaction.pk }}, '{{ transaction.transaction_code }}', '{{ transaction.type }}', {{ transaction.amount }})">-->
-    <!--      <i class="bi bi-pencil-square"></i>-->
-    <!--    </button>-->
     <button
         class="btn btn-sm btn-outline-primary me-1"
         data-bs-toggle="modal"
@@ -25,7 +18,12 @@
         hx-target="#modal-form-container">
       <i class="bi bi-pencil-square"></i>
     </button>
-    <button class="btn btn-sm btn-outline-danger">
+    <button
+        class="btn btn-sm btn-outline-danger"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteTransactionModal"
+        hx-get="/delete-transaction/{{ transaction.pk }}/"
+        hx-target="#delete-modal-container">
       <i class="bi bi-trash3"></i>
     </button>
   </td>
