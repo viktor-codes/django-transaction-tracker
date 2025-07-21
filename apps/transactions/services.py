@@ -45,7 +45,8 @@ class TransactionService:
                 created_count += 1
 
             logger.info(
-                f"Import complete: {created_count} created, {skipped_count} skipped"
+                f"Import complete: {created_count} created, "
+                f"{skipped_count} skipped"
             )
             return created_count, skipped_count
 

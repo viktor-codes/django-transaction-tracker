@@ -17,7 +17,9 @@ class TransactionAPIClient:
             response.raise_for_status()
 
             transactions_data = response.json()
-            logger.info(f"Fetched {len(transactions_data)} transactions from API")
+            logger.info(
+                f"Fetched {len(transactions_data)} transactions from API"
+            )
 
             return transactions_data
 

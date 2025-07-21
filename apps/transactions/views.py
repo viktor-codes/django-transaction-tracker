@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from .models import Transaction
 from django.http import HttpResponse
 from .services import TransactionService
@@ -123,14 +123,16 @@ def edit_transaction(request, pk):
         # GET request - show form
         form = TransactionForm(instance=transaction)
         context = {"form": form, "transaction": transaction}
-        return render(request, "transactions/partials/edit_form.html", context)
+        return render(
+            request, "transactions/partials/edit_form.html", context
+        )
 
 
 def delete_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk)
 
     if request.method == "POST":
-        transaction_code = transaction.transaction_code
+
         transaction.delete()
 
         # Return success response for HTMX

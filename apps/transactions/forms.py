@@ -42,8 +42,10 @@ class TransactionForm(forms.ModelForm):
                 ).count()
 
                 if today_expenses_count >= 200:
-                    raise forms.ValidationError(
-                        "Your daily expense limit reached."
+                    raise (
+                        forms.ValidationError(
+                            "Your daily expense limit reached."
+                        )
                     )
 
         return cleaned_data
